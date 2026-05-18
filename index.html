@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>spitmux ~ defthrets</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;700&family=Fira+Code:wght@400;500;700&family=Space+Mono:wght@400;700&family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="flicker">
+  <canvas id="matrix"></canvas>
+  <div class="crt"></div>
+  <div class="shadow-mask"></div>
+  <div class="vignette"></div>
+  <div class="flash"></div>
+
+  <main class="shell">
+    <div class="titlebar">
+      <div class="left">
+        <span class="dots"><span class="d-r">●</span> <span class="d-y">●</span> <span class="d-g">●</span></span>
+        &nbsp;&nbsp;<span>tty1</span>&nbsp;—&nbsp;<span>spitmux@pm.me</span>
+      </div>
+      <div class="right">
+        <span class="v-conn">conn <b>encrypted</b></span>
+        <span class="v-ver">v<b>0.3.4</b></span>
+        <span class="v-clk" id="clock"><b>--:--:--</b></span>
+      </div>
+    </div>
+
+    <section class="frame-head" id="frame-head">
+      <img class="crt-bg" src="assets/bg-rain.gif" alt="" aria-hidden="true" />
+      <div class="ascii-wrap" aria-label="spitmux" id="ascii-wrap" title="click for glitch">
+<pre class="ascii main">   .x+=:.                    .         s                                                    
+  z`    ^%                  @88&gt;      :8                                                    
+     .   &lt;k  .d``           %8P      .88       ..    .     :       x.    .        uL   ..   
+   .@8Ned8"  @8Ne.   .u      .      :888ooo  .888: x888  x888.   .@88k  z88u    .@88b  @88R 
+ .@^%8888"   %8888:u@88N   .@88u  -*8888888 ~`8888~'888X`?888f` ~"8888 ^8888   '"Y888k/"*P  
+x88:  `)8b.   `888I  888. ''888E`   8888      X888  888X '888&gt;    8888  888R      Y888L     
+8888N=*8888    888I  888I   888E    8888      X888  888X '888&gt;    8888  888R       8888     
+ %8"    R88    888I  888I   888E    8888      X888  888X '888&gt;    8888  888R       `888N    
+  @8Wou 9%   uW888L  888'   888E   .8888Lu=   X888  888X '888&gt;    8888 ,888B .  .u./"888&amp;   
+.888888P`   '*88888Nu88P    888&amp;   ^%888*    "*88%""*88" '888!`  "8888Y 8888"  d888" Y888*" 
+`   ^"F     ~ '88888F`      R888"    'Y"       `~    "    `"`     `Y"   'YP    ` "Y   Y"    
+               888 ^         ""                                                             
+               *8E                                                                          
+               '8&gt;                                                                          
+                "                                                                           </pre>
+      </div>
+
+      <div class="tagline">
+        <span class="quote">»</span>
+        <span class="glitch" data-text="you will succumb to the poison you have tasted">you will succumb to the poison you have tasted</span>
+        <span class="cursor">▍</span>
+      </div>
+      <span class="crt-label">CRT-1985 · DEFTHRETS</span>
+      <span class="crt-led"></span>
+      </section>
+
+    <div class="workspace">
+      <!-- LEFT: github repos as cyberpunk hacker buttons -->
+      <aside class="col left">
+        <div class="repos-window">
+          <div class="repos-banner">
+            <img class="mona" src="assets/mona-loading.gif" alt="mona" />
+<pre class="gh-ascii"> ▄▀▀▀ ▀ ▀▀▀ █ █ █ █ █▀▄
+ █ ▄▄ █  █  █▀█ █ █ █▀▄
+ ▀▀▀  ▀  ▀  ▀ ▀ ▀▀▀ ▀▀ </pre>
+          </div>
+          <div class="repos-header">
+            <span class="title"><span class="live-dot"></span>PRJ.GIT</span>
+            <span>@ defthrets</span>
+          </div>
+          <div class="repos-scan" id="repos-scan">» scan ▸ api.github.com</div>
+          <div class="repos-list" id="repos-list"></div>
+          <div class="repos-footer">
+            <span class="node-count">6 nodes</span>
+            <a href="https://github.com/defthrets" target="_blank" rel="noopener">github.com/defthrets</a>
+          </div>
+        </div>
+      </aside>
+
+      <!-- CENTER: terminal -->
+      <section class="col center">
+        
+        <section class="frame" id="frame">
+
+      <div class="frame-flash" id="frame-flash"></div>
+      <div id="out"></div>
+
+          <div class="line prompt-line" id="prompt-row">
+            <span class="prompt"><span class="user">spitmux</span><span class="at">@</span><span class="host">defthrets</span><span class="at">:</span><span class="path">~</span><span class="dollar"> $</span></span>
+            <span class="input-wrap">
+              <input id="cmd-input" type="text" autocomplete="off" spellcheck="false" autocapitalize="off" autocorrect="off" disabled />
+              <span class="fake-cursor" id="fake-cursor"></span>
+              <span id="cmd-measure" style="position:absolute; visibility:hidden; white-space:pre;"></span>
+            </span>
+          </div>
+        </section>
+      </section>
+
+      <!-- RIGHT: radar + blog feed -->
+      <aside class="col right">
+        <div class="radar-window">
+          <div class="radar-roll"></div>
+          <div class="radar-glitch-bar" id="radar-glitch-bar"></div>
+          <div class="radar-header">
+            <div class="radar-disc">
+              <img id="sage-img" src="assets/sage.gif" alt="" aria-hidden="true" />
+              <canvas id="radar-static"></canvas>
+            </div>
+            <div class="radar-meta">
+              <div class="id-card">
+                <div class="id-title">ID//MULTIPASS</div>
+                <div class="id-num">── ID-0666 ────────</div>
+                <div class="id-row"><span class="k">NAME</span><span class="v">DEFTHRETS</span></div>
+                <div class="id-row"><span class="k">RANK</span><span class="v">SKID</span></div>
+                <div class="id-row"><span class="k">BLOOD TYPE</span><span class="v nocaps">x19c</span></div>
+                <div class="id-row"><span class="k">FACTION</span><span class="v">R4TB0Y$</span></div>
+                <div class="id-row"><span class="k">VIRAL STATE</span><span class="v on">HIGH</span></div>
+                <div class="id-row"><span class="k">SOCIAL CREDIT SCORE</span><span class="v blip-counter" id="blip-counter">02</span></div>
+                <div class="id-barcode">┃┃│┃│ │┃│┃│ │┃┃│ ┃│┃</div>
+              </div>
+            </div>
+          </div>
+          <div class="radar-feed" id="radar-feed">
+<pre class="blog-ascii"> ▄▀▀▄ █    ▄▀▀▄ ▄▀▀▄ 
+ █▀▀▄ █    █  █ █ ▄▄ 
+ ▀▀▀  ▀▀▀▀ ▀▀▀  ▀▀▀▀ </pre>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="statusbar">
+      <div class="left">
+        <span class="item online" data-cmd="whoami"><span class="dot"></span>online</span>
+        <span class="item tor" data-cmd="uname">tor: <b>routed</b></span>
+        <span class="item matrix" data-cmd="matrix">matrix: <b id="matrix-pct">45%</b></span>
+      </div>
+      <div class="right">
+      </div>
+    </div>
+  </main>
+
+  <script src="matrix.js"></script>
+  <script src="effects.js"></script>
+  <script src="content.js"></script>
+  <script>
+    // ─── Blog feed source ───────────────────────────────────────────────
+    // Paste your RSSHub URL below to pull your X timeline automatically.
+    // Example: "https://rsshub.app/twitter/user/spitmux"
+    // Leave empty to use the mock posts from content.js.
+    window.SPITMUX_FEED_URL = "";
+  </script>
+  <script src="boot.js"></script>
+  <script src="terminal.js"></script>
+  <script src="radar.js"></script>
+  <script src="radar-static.js"></script>
+  <script src="blog-feed.js"></script>
+  <script src="repos-panel.js"></script>
+
+  <script>
+    // default font class
+    document.body.classList.add("font-jetbrains");
+    document.documentElement.style.setProperty("--font", '"JetBrains Mono"');
+
+    // clock
+    (function tick() {
+      const t = new Date();
+      const z = (n) => String(n).padStart(2, "0");
+      document.getElementById("clock").innerHTML = `<b>${z(t.getHours())}:${z(t.getMinutes())}:${z(t.getSeconds())}</b>`;
+      setTimeout(tick, 1000);
+    })();
+
+    // social credit score — starts at 5, ticks down by 1 every 10s, persists across reloads
+    (function () {
+      const KEY = "spitmux.socialCredit";
+      const START = 2;
+      const START_AT = Date.now();
+      function load() {
+        try {
+          const raw = localStorage.getItem(KEY);
+          if (raw) {
+            const obj = JSON.parse(raw);
+            // honor stored start time only if its initial value matches current START
+            if (obj && typeof obj.startedAt === "number") {
+              return { value: obj.value, startedAt: obj.startedAt };
+            }
+          }
+        } catch (e) {}
+        return { value: START, startedAt: START_AT };
+      }
+      function save(state) {
+        try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+      }
+      function fmt(n) {
+        if (n >= 0) return String(n).padStart(2, "0");
+        return "-" + String(Math.abs(n)).padStart(2, "0");
+      }
+      const state = load();
+      function update() {
+        const elapsed = Math.floor((Date.now() - state.startedAt) / 10000);
+        const cur = START - elapsed;
+        save({ value: cur, startedAt: state.startedAt });
+        const el = document.getElementById("blip-counter");
+        if (!el) return;
+        el.textContent = fmt(cur);
+        // green when positive, fade through amber, red when negative
+        let color;
+        if (cur >= 4)       color = "#5cff8a";          // bright green
+        else if (cur >= 1)  color = "#a8ff7a";          // yellow-green
+        else if (cur >= -3) color = "#ffd84d";          // amber warning
+        else if (cur >= -8) color = "#ff8c1c";          // orange
+        else                color = "#ff3a3a";          // red
+        el.style.color = color;
+        el.style.textShadow = `0 0 6px ${color}80`;
+      }
+      update();
+      setInterval(update, 1000);
+    })();
+
+    // wire hint chips & status items to run their data-cmd
+    function wireRunners() {
+      document.querySelectorAll("[data-cmd]").forEach((el) => {
+        if (el.dataset.wired) return;
+        el.dataset.wired = "1";
+        el.addEventListener("click", () => {
+          if (window.runCommand) window.runCommand(el.dataset.cmd);
+        });
+      });
+    }
+    wireRunners();
+
+    // ASCII click → glitch
+    document.getElementById("ascii-wrap").addEventListener("click", () => {
+      window.crtFlash && window.crtFlash();
+      document.querySelectorAll(".ascii.main").forEach((el) => window.scrambleEl && window.scrambleEl(el, 700));
+    });
+
+    // Tagline click → glitch scramble itself
+    document.querySelector(".tagline .glitch").addEventListener("click", (e) => {
+      window.scrambleEl && window.scrambleEl(e.currentTarget, 600);
+    });
+  </script>
+
+  <!-- React + Babel for the Tweaks panel only -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+  <script type="text/babel" src="tweaks-app.jsx"></script>
+  <div id="tweaks-root"></div>
+</body>
+</html>
