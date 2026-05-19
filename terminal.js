@@ -133,8 +133,6 @@
         // ── the questionable stuff
         ["sudo <cmd>",     "don't"],
         ["exit",           "you can't"],
-        // ── games
-        ["dino",           "chrome dino run // ascii edition"],
       ];
       writeLine('<span class="head">available commands</span> <span class="dim">· click any row</span>');
       writeLine('<span class="dim">' + "─".repeat(54) + "</span>");
@@ -880,22 +878,6 @@
       ctx.blank();
     },
   };
-
-  COMMANDS.dino = {
-    desc: "chrome dino run ascii edition",
-    run() {
-      out.innerHTML = "";
-      if (window.startDino) {
-        window.startDino(ctx, out);
-      } else {
-        writeLine('<span class="fail">dino: game module failed to load</span>');
-        ctx.blank();
-      }
-    },
-  };
-
-  COMMANDS.game = COMMANDS.dino; // alias
-
   COMMANDS.konami = {
     desc: "hint",
     run() {
