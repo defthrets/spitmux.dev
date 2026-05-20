@@ -149,10 +149,8 @@ x88:  `)8b.   `888I  888. ''888E`   8888      X888  888X '888&gt;    8888  888R 
   <script src="content.js"></script>
   <script>
     // ─── Blog feed source ───────────────────────────────────────────────
-    // Paste your RSSHub URL below to pull your X timeline automatically.
-    // Example: "https://rsshub.app/twitter/user/spitmux"
-    // Leave empty to use the mock posts from content.js.
-    window.SPITMUX_FEED_URL = "";
+    // Pulls @spitmux X posts from feed.json (updated via cron on the rig).
+    window.SPITMUX_FEED_URL = "/feed.json";
   </script>
   <script src="boot.js"></script>
   <script src="terminal.js"></script>

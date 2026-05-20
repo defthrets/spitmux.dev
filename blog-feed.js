@@ -162,11 +162,12 @@
 
   // ─── BOOTSTRAP ─────────────────────────────────────────────────────────
   async function init() {
-    // always render mock first so the panel isn't empty during fetch
-    render(D.blog);
-
-    if (!FEED_URL) {
-      console.info("[blog-feed] no FEED_URL set \u2014 using local mock from content.js");
+    if (FEED_URL) {
+      // Show loading state while fetching live feed
+      feed.innerHTML = '<div style="color:var(--text);opacity:0.5;text-align:center;padding:40px;">… fetching feed …</div>';
+    } else {
+      // No feed URL configured — use mock posts from content.js
+      render(D.blog);
       return;
     }
 
