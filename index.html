@@ -176,28 +176,28 @@ x88:  `)8b.   `888I  888. ''888E`   8888      X888  888X '888&gt;    8888  888R 
       document.head.appendChild(s);
 
       var fallbackFired = false;
-      var FALLBACK_MS = 5000;
+      var MAX_WAIT = 8000;
 
-      // Poll for X iframe
+      // Poll for X iframe with actual content
       var check = setInterval(function() {
         var iframe = X_EMBED.querySelector('iframe');
-        if (iframe && iframe.offsetHeight > 50) {
+        if (iframe && iframe.offsetHeight > 50 && iframe.contentWindow) {
           clearInterval(check);
-          // X loaded — hide the mock blog cards underneath
+          // X loaded with real content — hide the mock blog cards underneath
           feed.querySelectorAll('.dossier').forEach(function(c) { c.style.display = 'none'; });
         }
       }, 400);
 
-      // Fallback after 5s
+      // Fallback after MAX_WAIT — X didn't load real content
       setTimeout(function() {
         clearInterval(check);
         if (fallbackFired) return;
         fallbackFired = true;
         X_EMBED.style.display = 'none';
-      }, FALLBACK_MS);
+      }, MAX_WAIT);
 
-      // Hard stop after 12s
-      setTimeout(function() { clearInterval(check); }, 12000);
+      // Hard stop
+      setTimeout(function() { clearInterval(check); }, MAX_WAIT + 5000);
     })();
   </script>
   <script src="repos-panel.js"></script>
