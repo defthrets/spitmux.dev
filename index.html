@@ -128,6 +128,17 @@ x88:  `)8b.   `888I  888. ''888E`   8888      X888  888X '888&gt;    8888  888R 
 <pre class="blog-ascii"> ▄▀▀▄ █    ▄▀▀▄ ▄▀▀▄ 
  █▀▀▄ █    █  █ █ ▄▄ 
  ▀▀▀  ▀▀▀▀ ▀▀▀  ▀▀▀▀ </pre>
+            <!-- X timeline — renders on top of blog feed; hidden on failure -->
+            <div id="x-embed">
+              <a class="twitter-timeline"
+                 href="https://twitter.com/spitmux"
+                 data-theme="dark"
+                 data-chrome="nofooter noheader noborders noscrollbar transparent"
+                 data-tweet-limit="5"
+                 data-dnt="true"
+                 aria-label="@spitmux tweets">
+              </a>
+            </div>
           </div>
         </div>
       </aside>
@@ -157,6 +168,46 @@ x88:  `)8b.   `888I  888. ''888E`   8888      X888  888X '888&gt;    8888  888R 
   <script src="radar.js"></script>
   <script src="radar-static.js"></script>
   <script src="blog-feed.js"></script>
+  <script>
+    // ─── X timeline embed with blog fallback ─────────────────────────────
+    (function() {
+      var X_EMBED = document.getElementById('x-embed');
+      if (!X_EMBED) return;
+
+      // Load X widget JS async
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://platform.twitter.com/widgets.js';
+      document.head.appendChild(s);
+
+      var fallbackFired = false;
+      var FALLBACK_MS = 5000;
+
+      // Poll for X iframe
+      var check = setInterval(function() {
+        var iframe = X_EMBED.querySelector('iframe');
+        if (iframe && iframe.offsetHeight > 50) {
+          clearInterval(check);
+          // X loaded — hide the mock blog cards underneath
+          var feed = document.getElementById('radar-feed');
+          if (feed) {
+            feed.querySelectorAll('.dossier').forEach(function(c) { c.style.display = 'none'; });
+          }
+        }
+      }, 500);
+
+      // Fallback after 5s
+      setTimeout(function() {
+        clearInterval(check);
+        if (fallbackFired) return;
+        fallbackFired = true;
+        X_EMBED.style.display = 'none';
+      }, FALLBACK_MS);
+
+      // Hard stop after 10s
+      setTimeout(function() { clearInterval(check); }, 10000);
+    })();
+  </script>
   <script src="repos-panel.js"></script>
 
 
