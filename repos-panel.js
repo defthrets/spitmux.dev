@@ -1,4 +1,4 @@
-// Repos panel — fetches live data from github.com/<USER>, falls back to mock list.
+// Repos panel — fetches live data from github.com/<USER>, no placeholders.
 (function () {
   const list = document.getElementById("repos-list");
   const scan = document.getElementById("repos-scan");
@@ -15,10 +15,10 @@
   const scanMsgs = [
     `scan ▸ api.github.com/users/${USER}/repos`,
     "auth ▸ public, no token",
-    "fetch ▸ /repos?per_page=12&sort=updated",
+    "fetch ▸ /repos?per_page=100&sort=updated",
     "parse ▸ json",
     "rank ▸ by updated_at desc",
-    "render ▸ ttl=10m",
+    "render ▸ live",
   ];
   let smi = 0;
   function tickScan() {
@@ -85,15 +85,14 @@
 
   async function fetchRepos() {
     try {
-      const r = await fetch(`https://api.github.com/users/${USER}/repos?sort=updated&per_page=12`, {
+      const r = await fetch(`https://api.github.com/users/${USER}/repos?sort=updated&per_page=100`, {
         headers: { Accept: "application/vnd.github+json" },
       });
       if (!r.ok) throw new Error("github api " + r.status);
       const data = await r.json();
-      // skip forks, archives, and the meta repo if present
+      // skip forks, show everything else
       return data
         .filter((d) => !d.fork)
-        .slice(0, 10)
         .map((d) => ({
           name: d.name,
           desc: d.description || "no description",
@@ -107,16 +106,15 @@
   }
 
   async function init() {
-    // start with placeholder mock so panel doesn't sit empty while we fetch
-    const placeholder = D.repos.slice(0, 10);
-    await sleep(900); // BIOS beat
-    reveal(placeholder);
+    // Show scanning state while fetching
+    list.innerHTML = '<div style="color:var(--text);opacity:0.5;text-align:center;padding:40px;">… fetching live repos …</div>';
 
     const live = await fetchRepos();
     if (live && live.length) {
-      await sleep(900);
-      // wipe and re-reveal with real data
+      await sleep(600);
       reveal(live);
+    } else {
+      list.innerHTML = '<div style="color:var(--red);opacity:0.7;text-align:center;padding:40px;">github api unreachable</div>';
     }
   }
 
