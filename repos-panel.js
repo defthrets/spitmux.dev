@@ -15,7 +15,7 @@
   const scanMsgs = [
     `scan ▸ api.github.com/users/${USER}/repos`,
     "auth ▸ public, no token",
-    "fetch ▸ /repos?per_page=8&sort=updated",
+    "fetch ▸ /repos?per_page=12&sort=updated",
     "parse ▸ json",
     "rank ▸ by updated_at desc",
     "render ▸ ttl=10m",
@@ -85,7 +85,7 @@
 
   async function fetchRepos() {
     try {
-      const r = await fetch(`https://api.github.com/users/${USER}/repos?sort=updated&per_page=8`, {
+      const r = await fetch(`https://api.github.com/users/${USER}/repos?sort=updated&per_page=12`, {
         headers: { Accept: "application/vnd.github+json" },
       });
       if (!r.ok) throw new Error("github api " + r.status);
@@ -93,7 +93,7 @@
       // skip forks, archives, and the meta repo if present
       return data
         .filter((d) => !d.fork)
-        .slice(0, 6)
+        .slice(0, 10)
         .map((d) => ({
           name: d.name,
           desc: d.description || "no description",
@@ -108,7 +108,7 @@
 
   async function init() {
     // start with placeholder mock so panel doesn't sit empty while we fetch
-    const placeholder = D.repos.slice(0, 6);
+    const placeholder = D.repos.slice(0, 10);
     await sleep(900); // BIOS beat
     reveal(placeholder);
 
