@@ -128,17 +128,6 @@ x88:  `)8b.   `888I  888. ''888E`   8888      X888  888X '888&gt;    8888  888R 
 <pre class="blog-ascii"> ▄▀▀▄ █    ▄▀▀▄ ▄▀▀▄ 
  █▀▀▄ █    █  █ █ ▄▄ 
  ▀▀▀  ▀▀▀▀ ▀▀▀  ▀▀▀▀ </pre>
-            <!-- X timeline — renders on top of blog feed; hidden on failure -->
-            <div id="x-embed">
-              <a class="twitter-timeline"
-                 href="https://twitter.com/spitmux"
-                 data-theme="dark"
-                 data-chrome="nofooter noheader noborders noscrollbar transparent"
-                 data-tweet-limit="5"
-                 data-dnt="true"
-                 aria-label="@spitmux tweets">
-              </a>
-            </div>
           </div>
         </div>
       </aside>
@@ -160,8 +149,8 @@ x88:  `)8b.   `888I  888. ''888E`   8888      X888  888X '888&gt;    8888  888R 
   <script src="content.js"></script>
   <script>
     // ─── Blog feed source ───────────────────────────────────────────────
-    // Pulls @spitmux X posts from feed.json (updated via cron on the rig).
-    window.SPITMUX_FEED_URL = "/feed.json";
+    // Empty = use mock posts from content.js. X embed loads on top.
+    window.SPITMUX_FEED_URL = "";
   </script>
   <script src="boot.js"></script>
   <script src="terminal.js"></script>
@@ -171,8 +160,14 @@ x88:  `)8b.   `888I  888. ''888E`   8888      X888  888X '888&gt;    8888  888R 
   <script>
     // ─── X timeline embed with blog fallback ─────────────────────────────
     (function() {
-      var X_EMBED = document.getElementById('x-embed');
-      if (!X_EMBED) return;
+      var feed = document.getElementById('radar-feed');
+      if (!feed) return;
+
+      // Inject X embed into the feed (blog-feed.js has already rendered mock posts)
+      var X_EMBED = document.createElement('div');
+      X_EMBED.id = 'x-embed';
+      X_EMBED.innerHTML = '<a class="twitter-timeline" href="https://twitter.com/spitmux" data-theme="dark" data-chrome="nofooter noheader noborders noscrollbar transparent" data-tweet-limit="5" data-dnt="true" aria-label="@spitmux tweets"></a>';
+      feed.appendChild(X_EMBED);
 
       // Load X widget JS async
       var s = document.createElement('script');
@@ -189,12 +184,9 @@ x88:  `)8b.   `888I  888. ''888E`   8888      X888  888X '888&gt;    8888  888R 
         if (iframe && iframe.offsetHeight > 50) {
           clearInterval(check);
           // X loaded — hide the mock blog cards underneath
-          var feed = document.getElementById('radar-feed');
-          if (feed) {
-            feed.querySelectorAll('.dossier').forEach(function(c) { c.style.display = 'none'; });
-          }
+          feed.querySelectorAll('.dossier').forEach(function(c) { c.style.display = 'none'; });
         }
-      }, 500);
+      }, 400);
 
       // Fallback after 5s
       setTimeout(function() {
@@ -204,8 +196,8 @@ x88:  `)8b.   `888I  888. ''888E`   8888      X888  888X '888&gt;    8888  888R 
         X_EMBED.style.display = 'none';
       }, FALLBACK_MS);
 
-      // Hard stop after 10s
-      setTimeout(function() { clearInterval(check); }, 10000);
+      // Hard stop after 12s
+      setTimeout(function() { clearInterval(check); }, 12000);
     })();
   </script>
   <script src="repos-panel.js"></script>
