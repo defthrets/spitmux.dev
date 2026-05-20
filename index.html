@@ -149,7 +149,7 @@ x88:  `)8b.   `888I  888. ''888E`   8888      X888  888X '888&gt;    8888  888R 
   <script src="content.js"></script>
   <script>
     // ─── Blog feed source ───────────────────────────────────────────────
-    // Uses mock posts from content.js until X feed is wired up.
+    // Empty = use mock posts from content.js. X embed loads on top.
     window.SPITMUX_FEED_URL = "";
   </script>
   <script src="boot.js"></script>
@@ -157,6 +157,49 @@ x88:  `)8b.   `888I  888. ''888E`   8888      X888  888X '888&gt;    8888  888R 
   <script src="radar.js"></script>
   <script src="radar-static.js"></script>
   <script src="blog-feed.js"></script>
+  <script>
+    // ─── X timeline embed with blog fallback ─────────────────────────────
+    (function() {
+      var feed = document.getElementById('radar-feed');
+      if (!feed) return;
+
+      // Inject X embed into the feed (blog-feed.js has already rendered mock posts)
+      var X_EMBED = document.createElement('div');
+      X_EMBED.id = 'x-embed';
+      X_EMBED.innerHTML = '<a class="twitter-timeline" href="https://twitter.com/spitmux" data-theme="dark" data-chrome="nofooter noheader noborders noscrollbar transparent" data-tweet-limit="5" data-dnt="true" aria-label="@spitmux tweets"></a>';
+      feed.appendChild(X_EMBED);
+
+      // Load X widget JS async
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://platform.twitter.com/widgets.js';
+      document.head.appendChild(s);
+
+      var fallbackFired = false;
+      var MAX_WAIT = 8000;
+
+      // Poll for X iframe with actual content
+      var check = setInterval(function() {
+        var iframe = X_EMBED.querySelector('iframe');
+        if (iframe && iframe.offsetHeight > 50 && iframe.contentWindow) {
+          clearInterval(check);
+          // X loaded with real content — hide the mock blog cards underneath
+          feed.querySelectorAll('.dossier').forEach(function(c) { c.style.display = 'none'; });
+        }
+      }, 400);
+
+      // Fallback after MAX_WAIT — X didn't load real content
+      setTimeout(function() {
+        clearInterval(check);
+        if (fallbackFired) return;
+        fallbackFired = true;
+        X_EMBED.style.display = 'none';
+      }, MAX_WAIT);
+
+      // Hard stop
+      setTimeout(function() { clearInterval(check); }, MAX_WAIT + 5000);
+    })();
+  </script>
   <script src="repos-panel.js"></script>
 
 
